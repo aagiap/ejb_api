@@ -1,7 +1,6 @@
 package com.example.ws_cert.service;
 
 import com.example.ws_cert.entity.CertRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,7 +28,7 @@ public class EjbcaPkcs10enrollService {
     private String keystoreFile = "C:\\\\Users\\\\giap\\\\Desktop\\\\p12\\\\superadminubuntu.p12";
     private String keystorePassword = "ejbca";
 
-    private String truststoreFile = "keystore/truststoreubuntu.p12";
+    private String truststoreFile = "keystore/truststoreC.p12";
     private String truststorePassword = "changeit";
 
     private final WebClient webClient;
