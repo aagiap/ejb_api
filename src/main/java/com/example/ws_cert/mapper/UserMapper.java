@@ -1,0 +1,12 @@
+package com.example.ws_cert.mapper;
+
+import com.example.ws_cert.dto.request.UserCreationRequest;
+import com.example.ws_cert.dto.response.UserResponse;
+import com.example.ws_cert.entity.User;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    User toUser(UserCreationRequest request);
+    UserResponse toUserResponse(User user);
+}
