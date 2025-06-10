@@ -1,4 +1,4 @@
-package com.example.ws_cert.dto.response;
+package com.example.ws_cert.security.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
     private String token;
-
 
 }

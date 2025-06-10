@@ -11,17 +11,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @PostMapping
+
+    @PostMapping("/create")
     ResponseEntity<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     ResponseEntity<List<UserResponse>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }

@@ -2,19 +2,23 @@ package com.example.ws_cert.entity;
 
 import com.example.ws_cert.constant.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Getter
 @Setter
+@Table(name = "roles")
 public class Role {
 
     @Id
-    private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UserRole name;
 
 }

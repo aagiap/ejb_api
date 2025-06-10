@@ -1,4 +1,4 @@
-package com.example.ws_cert.security;
+package com.example.ws_cert.security.service;
 
 import com.example.ws_cert.entity.User;
 import org.springframework.security.core.GrantedAuthority;

@@ -7,9 +7,7 @@ import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.entity.Role;
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.mapper.UserMapper;
-import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +24,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
 
 
@@ -36,8 +33,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        roleRepository.findById(UserRole.USER_ROLE).ifPresent(roles::add);
-
+        Role role = new Role();
+        role.setName(UserRole.valueOf(request.getRole()));
+        roles.add(role);
         user.setRoles(roles);
 
         try {
@@ -53,7 +51,7 @@ public class UserService {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
-        User user = userRepository.findByUserName(name).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found"));
 
         return userMapper.toUserResponse(user);
     }

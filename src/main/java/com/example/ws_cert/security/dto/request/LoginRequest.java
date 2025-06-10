@@ -1,4 +1,4 @@
-package com.example.ws_cert.dto.request;
+package com.example.ws_cert.security.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
