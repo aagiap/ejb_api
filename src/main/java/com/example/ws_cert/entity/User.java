@@ -8,8 +8,8 @@ import java.util.Set;
 
 
 @Entity
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

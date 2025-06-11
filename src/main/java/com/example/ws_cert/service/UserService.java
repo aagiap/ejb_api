@@ -44,7 +44,7 @@ public class UserService {
             throw new RuntimeException("User already exists", exception);
         }
 
-        return userMapper.toUserResponse(user);
+        return userMapper.  toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
