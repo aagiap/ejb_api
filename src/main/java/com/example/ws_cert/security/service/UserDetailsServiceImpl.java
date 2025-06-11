@@ -2,6 +2,7 @@ package com.example.ws_cert.security.service;
 
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,9 +18,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userDetail = userRepository.findByUsername(username); // Assuming 'email' is used as username
+        Optional<User> userDetail = userRepository.findByUsername(username);
 
         // Converting UserInfo to UserDetails
         return userDetail.map(UserDetailsImpl::new)

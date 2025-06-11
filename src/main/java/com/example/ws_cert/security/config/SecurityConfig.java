@@ -2,6 +2,7 @@ package com.example.ws_cert.security.config;
 
 import com.example.ws_cert.security.filter.JwtAuthenticationFilter;
 
+import com.example.ws_cert.security.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +23,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -50,8 +51,8 @@ public class SecurityConfig {
 
                         // Role-based endpoints
                         .requestMatchers("/users/create/**").hasAuthority("ROLE_ADMIN")
-//                        .requestMatchers("/auth/get/**").hasAuthority("ROLE_ADMIN")
-
+                        .requestMatchers("/users/getAll/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/error").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )

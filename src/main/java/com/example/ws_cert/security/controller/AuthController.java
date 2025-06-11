@@ -7,6 +7,7 @@ import com.example.ws_cert.security.dto.request.SignUpRequest;
 import com.example.ws_cert.security.dto.response.LoginResponse;
 import com.example.ws_cert.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+//        System.out.println(">>> User name: " + loginRequest.getUsername());
+//        System.out.println(">>> Password input: " + loginRequest.getPassword());
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );

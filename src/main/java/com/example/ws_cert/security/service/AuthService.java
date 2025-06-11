@@ -12,6 +12,8 @@ import com.example.ws_cert.security.dto.request.SignUpRequest;
 import com.example.ws_cert.security.dto.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

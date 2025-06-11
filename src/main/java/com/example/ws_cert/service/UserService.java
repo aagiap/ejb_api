@@ -7,6 +7,7 @@ import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.entity.Role;
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.mapper.UserMapper;
+import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
 
 
@@ -33,8 +35,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        Role role = new Role();
-        role.setName(UserRole.valueOf(request.getRole()));
+        Role role = roleRepository.findByName(UserRole.valueOf(request.getRole()));
         roles.add(role);
         user.setRoles(roles);
 
@@ -44,7 +45,7 @@ public class UserService {
             throw new RuntimeException("User already exists", exception);
         }
 
-        return userMapper.  toUserResponse(user);
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
