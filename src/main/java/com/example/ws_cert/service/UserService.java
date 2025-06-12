@@ -28,8 +28,6 @@ public class UserService {
     private final RoleRepository roleRepository;
 
 
-
-
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));

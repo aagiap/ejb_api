@@ -1,0 +1,35 @@
+package com.example.ws_cert.controller;
+
+import com.example.ws_cert.dto.ejb.response.CaStatusResponse;
+import com.example.ws_cert.dto.ejb.response.GetLastestcrlResponse;
+import com.example.ws_cert.dto.response.ApiResponse;
+import com.example.ws_cert.service.CaV1Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/ca-v1")
+@RequiredArgsConstructor
+public class CaV1Controller {
+    private final CaV1Service caV1Service;
+
+
+    @GetMapping("/status")
+    public ApiResponse<CaStatusResponse> getCaStatus() throws Exception {
+        return ApiResponse.<CaStatusResponse>builder().response(caV1Service.getCaStatus()).build();
+    }
+
+    // không tải được cert của ManagementCA
+    @GetMapping("/cert-download/{subjectDn}")
+    public ApiResponse<String> certDownload(@PathVariable String subjectDn) throws Exception {
+        return ApiResponse.<String>builder().response(caV1Service.certDownload(subjectDn)).build();
+    }
+
+    @GetMapping("/getLastestCrl/{issuer_dn}")
+    public ApiResponse<GetLastestcrlResponse> getLastestCrl(@PathVariable String issuer_dn, @RequestParam boolean deltaCrl, @RequestParam Integer crlPartitionIndex) throws Exception {
+        return ApiResponse.<GetLastestcrlResponse>builder().response(caV1Service.getLastestCrl(issuer_dn, deltaCrl, crlPartitionIndex)).build();
+    }
+
+
+}

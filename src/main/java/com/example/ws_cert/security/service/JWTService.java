@@ -1,6 +1,5 @@
 package com.example.ws_cert.security.service;
 
-import com.example.ws_cert.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

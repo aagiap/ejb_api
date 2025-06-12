@@ -29,11 +29,6 @@ public class AuthService {
     private final RoleRepository roleRepository;
 
     public LoginResponse login(LoginRequest loginRequest) {
-//        User user = userRepository.findByUserName(loginRequest.getUsername())
-//                .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getUsername()));
-//        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-//            throw new RuntimeException("Invalid password for user: " + loginRequest.getUsername());
-//        }
         String token = jwtService.generateToken(loginRequest.getUsername());
 
         return LoginResponse.builder().token(token).build();

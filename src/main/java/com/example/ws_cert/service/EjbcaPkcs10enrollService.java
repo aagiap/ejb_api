@@ -64,32 +64,21 @@ public class EjbcaPkcs10enrollService {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-            HttpClient client = HttpClient.newBuilder()
-                    .sslContext(sslContext)
-                    .build();
+            HttpClient client = HttpClient.newBuilder().sslContext(sslContext).build();
 
             String jsonRequest = String.format("""
-                            {
-                                "certificate_request": "%s",
-                                "certificate_profile_name": "%s",
-                                "end_entity_profile_name": "%s",
-                                "certificate_authority_name": "%s",
-                                "username": "%s",
-                                "password": "%s",
-                                "response_format": "%s"
-                            }
-                            """,
-                    certRequest.getCertificate_request(),
-                    certRequest.getCertificate_profile_name(),
-                    certRequest.getEnd_entity_profile_name(),
-                    certRequest.getCertificate_authority_name(),
-                    certRequest.getUsername(),
-                    certRequest.getPassword(),
-                    certRequest.getResponse_format()
-            );
+                    {
+                        "certificate_request": "%s",
+                        "certificate_profile_name": "%s",
+                        "end_entity_profile_name": "%s",
+                        "certificate_authority_name": "%s",
+                        "username": "%s",
+                        "password": "%s",
+                        "response_format": "%s"
+                    }
+                    """, certRequest.getCertificate_request(), certRequest.getCertificate_profile_name(), certRequest.getEnd_entity_profile_name(), certRequest.getCertificate_authority_name(), certRequest.getUsername(), certRequest.getPassword(), certRequest.getResponse_format());
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(pkcsEndpoint))
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(pkcsEndpoint))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonRequest))
                     .build();
@@ -101,7 +90,6 @@ public class EjbcaPkcs10enrollService {
             return "Error processing: " + e.getMessage() + "\nCause: " + e.getCause();
         }
     }
-
 
 
 }

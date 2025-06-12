@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
 
 @Configuration
+@RequiredArgsConstructor
 public class ApplicationInitConfig {
     private final PasswordEncoder passwordEncoder;
     @NonFinal
@@ -24,9 +25,6 @@ public class ApplicationInitConfig {
     @NonFinal
     static final String ADMIN_PASSWORD = "admin";
 
-    public ApplicationInitConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
