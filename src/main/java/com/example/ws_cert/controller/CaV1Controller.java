@@ -1,6 +1,8 @@
 package com.example.ws_cert.controller;
 
+import com.example.ws_cert.dto.ejb.response.CaListResponse;
 import com.example.ws_cert.dto.ejb.response.CaStatusResponse;
+import com.example.ws_cert.dto.ejb.response.CreateCrlResponse;
 import com.example.ws_cert.dto.ejb.response.GetLastestcrlResponse;
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.service.CaV1Service;
@@ -29,6 +31,16 @@ public class CaV1Controller {
     @GetMapping("/getLastestCrl/{issuer_dn}")
     public ApiResponse<GetLastestcrlResponse> getLastestCrl(@PathVariable String issuer_dn, @RequestParam boolean deltaCrl, @RequestParam Integer crlPartitionIndex) throws Exception {
         return ApiResponse.<GetLastestcrlResponse>builder().response(caV1Service.getLastestCrl(issuer_dn, deltaCrl, crlPartitionIndex)).build();
+    }
+
+    @GetMapping("/getListCa")
+    public ApiResponse<CaListResponse> getLastestCrl(@RequestParam boolean includeExternal) throws Exception {
+        return ApiResponse.<CaListResponse>builder().response(caV1Service.getListCa(includeExternal)).build();
+    }
+
+    @PostMapping("/getListCa/{issuer_dn}")
+    public ApiResponse<CreateCrlResponse> createCrl(@PathVariable String issuer_dn,@RequestParam boolean deltacrl) throws Exception {
+        return ApiResponse.<CreateCrlResponse>builder().response(caV1Service.createCrl(issuer_dn,deltacrl)).build();
     }
 
 

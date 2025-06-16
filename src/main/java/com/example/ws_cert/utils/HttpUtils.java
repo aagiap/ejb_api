@@ -1,14 +1,31 @@
 package com.example.ws_cert.utils;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.EntityBuilder;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class HttpUtils {
     public HttpRequest buildHttpRequest(String url, String method, String body, Map<String, String> headers) {
@@ -39,4 +56,20 @@ public class HttpUtils {
         return ResponseEntity.status(response.statusCode())
                 .body(response.body());
     }
+
+//    // Multipart request (for file upload)
+//    public String sendMultipartRequest(String url, File file, String fileFieldName) throws IOException {
+//        HttpPost post = new HttpPost(url);
+//
+//        HttpEntity multipart = EntityBuilder.create()
+//                .setContentType(ContentType.MULTIPART_FORM_DATA)
+//                .setFile(file)
+//                .build();
+//
+//        post.setEntity(multipart);
+//
+//        return httpClient.execute(post, response ->
+//                new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8)
+//        );
+//    }
 }
