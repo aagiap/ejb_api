@@ -130,6 +130,11 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>4.1.109.Final</version> <!-- hoặc bản mới hơn -->
+        </dependency>
 
 
     </dependencies>

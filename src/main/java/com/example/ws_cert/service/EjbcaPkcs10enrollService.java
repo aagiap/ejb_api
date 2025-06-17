@@ -20,15 +20,16 @@ import java.security.KeyStore;
 @Service
 public class EjbcaPkcs10enrollService {
 
-//    private String pkcsEndpoint = "https://localhost:8443/ejbca/ejbca-rest-api/v1/certificate/pkcs10enroll";
-//    private String keystoreFile = "D:\\\\tet7\\\\ejbca-ce-r9.0.0\\\\p12\\\\superadmin.p12";
+      private String pkcsEndpoint = "https://localhost:8443/ejbca/ejbca-rest-api/v1/certificate/pkcs10enroll";
+      private String keystoreFile = "D:\\\\tet7\\\\ejbca-ce-r9.0.0\\\\p12\\\\superadmin.p12";
 
     //private String pkcsEndpoint = "https://192.168.49.147:8443/ejbca/ejbca-rest-api/v1/certificate/pkcs10enroll";
-    private String pkcsEndpoint = "https://ejbca.local:8443/ejbca/ejbca-rest-api/v1/certificate/pkcs10enroll";
-    private String keystoreFile = "C:\\\\Users\\\\giap\\\\Desktop\\\\p12\\\\superadminubuntu.p12";
+    //private String pkcsEndpoint = "https://ejbca.local:8443/ejbca/ejbca-rest-api/v1/certificate/pkcs10enroll";
+   // private String keystoreFile = "C:\\\\Users\\\\giap\\\\Desktop\\\\p12\\\\superadminubuntu.p12";
     private String keystorePassword = "ejbca";
 
-    private String truststoreFile = "keystore/truststoreC.p12";
+    //private String truststoreFile = "keystore/truststoreC.p12";
+    private String truststoreFile = "D:\\\\\\\\tet7\\\\\\\\ejbca-ce-r9.0.0\\\\\\\\p12\\\\\\\\truststore.p12";
     private String truststorePassword = "changeit";
 
     private final WebClient webClient;
@@ -50,11 +51,14 @@ public class EjbcaPkcs10enrollService {
 
             // Load truststore from classpath
             KeyStore trustStore = KeyStore.getInstance("JKS");
-            try (InputStream trustStream = getClass().getClassLoader().getResourceAsStream(truststoreFile)) {
-                if (trustStream == null) {
-                    throw new FileNotFoundException("TrustStore file not found in classpath: " + truststoreFile);
-                }
-                trustStore.load(trustStream, truststorePassword.toCharArray());
+//            try (InputStream trustStream = getClass().getClassLoader().getResourceAsStream(truststoreFile)) {
+//                if (trustStream == null) {
+//                    throw new FileNotFoundException("TrustStore file not found in classpath: " + truststoreFile);
+//                }
+//                trustStore.load(trustStream, truststorePassword.toCharArray());
+//            }
+            try (FileInputStream fis = new FileInputStream(truststoreFile)) {
+                trustStore.load(fis, truststorePassword.toCharArray());
             }
 
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

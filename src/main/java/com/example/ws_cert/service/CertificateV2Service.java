@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.net.ssl.SSLContext;
+import java.net.http.HttpRequest;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class CertificateV2Service {
@@ -19,10 +23,17 @@ public class CertificateV2Service {
     @Value("${ejbca.url.prefix-v2-certificate}")
     private String prefixUrl;
 
-    private String caV1Url;
+    private String certV2Url;
 
     @PostConstruct
     public void init() {
-        caV1Url = ejbcaUrl + prefixUrl;
+        certV2Url = ejbcaUrl + prefixUrl;
+    }
+
+    public Map<String, Object> markKeyRecovery(String issuer_dn, String certificate_serial_number) throws Exception {
+        SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
+        String url = certV2Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "keyrecovery";
+        HttpRequest request = httpUtils.build(url, "PUT", null);
+        return httpUtils.getStringObjectMap(sslContext, request);
     }
 }

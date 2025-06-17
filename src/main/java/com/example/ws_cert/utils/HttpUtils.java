@@ -1,6 +1,8 @@
 package com.example.ws_cert.utils;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.EntityBuilder;
@@ -14,10 +16,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -28,14 +32,48 @@ import java.util.Map;
 @Slf4j
 @Component
 public class HttpUtils {
-    public HttpRequest buildHttpRequest(String url, String method, String body, Map<String, String> headers) {
+//    public HttpRequest buildHttpRequest(String url, String method, String body, Map<String, String> headers) {
+//        HttpRequest.Builder builder = HttpRequest.newBuilder()
+//                .uri(URI.create(url));
+//
+//        switch (method.toUpperCase()) {
+//            case "GET" -> builder.GET();
+//            case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
+//            case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
+//            case "DELETE" -> builder.DELETE();
+//            default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
+//        }
+//
+//        if (headers != null) {
+//            headers.forEach(builder::header);
+//        }
+//
+//        return builder.build();
+//    }
+//
+//
+//    public HttpRequest build(String url, String method, String body) {
+//        return buildHttpRequest(url, method, body, Map.of("Content-Type", "application/json"));
+//    }
+private final ObjectMapper objectMapper = new ObjectMapper(); // dùng 1 lần duy nhất
+
+    public HttpRequest buildHttpRequest(String url, String method, Object body, Map<String, String> headers) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
 
+        String jsonBody = "";
+        if (body != null) {
+            try {
+                jsonBody = objectMapper.writeValueAsString(body);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to serialize body to JSON", e);
+            }
+        }
+
         switch (method.toUpperCase()) {
             case "GET" -> builder.GET();
-            case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
-            case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
+            case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofString(jsonBody));
+            case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofString(jsonBody));
             case "DELETE" -> builder.DELETE();
             default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
         }
@@ -47,8 +85,7 @@ public class HttpUtils {
         return builder.build();
     }
 
-
-    public HttpRequest build(String url, String method, String body) {
+    public HttpRequest build(String url, String method, Object body) {
         return buildHttpRequest(url, method, body, Map.of("Content-Type", "application/json"));
     }
 
@@ -72,4 +109,15 @@ public class HttpUtils {
 //                new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8)
 //        );
 //    }
+
+    public Map<String, Object> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
+        HttpClient client = HttpClient.newBuilder()
+                .sslContext(sslContext)
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
+    }
 }
