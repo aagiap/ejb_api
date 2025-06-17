@@ -19,6 +19,6 @@ public class CertificateV2Controller {
 
     @PutMapping("/revocationstatus/{issuer_dn}/{certificate_serial_number}")
     public ApiResponse<Map<String, Object>> markKeyRecovery(@PathVariable String issuer_dn, @PathVariable String certificate_serial_number) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV2Service.markKeyRecovery(issuer_dn, certificate_serial_number)).build();
+        return certificateV2Service.markKeyRecovery(issuer_dn, certificate_serial_number);
     }
 }

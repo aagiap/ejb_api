@@ -1,6 +1,7 @@
 package com.example.ws_cert.service;
 
 import com.example.ws_cert.dto.ejb.request.*;
+import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.utils.EjbTLSConnectionUtils;
 import com.example.ws_cert.utils.HttpUtils;
 import jakarta.annotation.PostConstruct;
@@ -32,7 +33,7 @@ public class CertificateV1Service {
         certV1Url = ejbcaUrl + prefixUrl;
     }
 
-    public Map<String, Object> getStatus() throws Exception {
+    public ApiResponse<Map<String, Object>> getStatus() throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/status";
@@ -40,7 +41,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> getExpiredCerts(Integer days, Integer offset, Integer maxNumberOfResults) throws Exception {
+    public ApiResponse<Map<String, Object>> getExpiredCerts(Integer days, Integer offset, Integer maxNumberOfResults) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/expire" + "?days=" + days + "&offset=" + offset + "&maxNumberOfResults=" + maxNumberOfResults;
@@ -48,7 +49,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> checkRevocationStatus(String issuer_dn, String certificate_serial_number) throws Exception {
+    public ApiResponse<Map<String, Object>> checkRevocationStatus(String issuer_dn, String certificate_serial_number) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "revocationstatus";
@@ -64,7 +65,7 @@ public class CertificateV1Service {
 //        return httpUtils.getStringObjectMap(sslContext, request);
 //    }
 
-    public Map<String, Object> searchCertificate(Map<String, Object> searchCertificateRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> searchCertificate(Map<String, Object> searchCertificateRequest) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/search" ;
@@ -72,7 +73,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> revoke(String issuer_dn, String certificate_serial_number) throws Exception {
+    public ApiResponse<Map<String, Object>> revoke(String issuer_dn, String certificate_serial_number) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "revoke";
@@ -81,7 +82,7 @@ public class CertificateV1Service {
     }
 
 
-    public Map<String, Object> enrollCertificate(EnrollRequest enrollRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> enrollCertificate(EnrollRequest enrollRequest) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/pkcs10enroll" ;
@@ -89,7 +90,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> finalizeEnrollCertificate(String request_id, FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> finalizeEnrollCertificate(String request_id, FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/" + request_id + "/finalize" ;
@@ -97,7 +98,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> enrollKeyStore(EnrollKeyStoreRequest enrollKeyStoreRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> enrollKeyStore(EnrollKeyStoreRequest enrollKeyStoreRequest) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/enrollkeystore" ;
@@ -105,7 +106,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public Map<String, Object> certificateRequest(CertificateRequest certificateRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> certificateRequest(CertificateRequest certificateRequest) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
 
         String url = certV1Url + "/certificaterequest" ;

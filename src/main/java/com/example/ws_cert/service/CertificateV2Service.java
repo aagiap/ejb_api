@@ -1,5 +1,6 @@
 package com.example.ws_cert.service;
 
+import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.utils.EjbTLSConnectionUtils;
 import com.example.ws_cert.utils.HttpUtils;
 import jakarta.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class CertificateV2Service {
         certV2Url = ejbcaUrl + prefixUrl;
     }
 
-    public Map<String, Object> markKeyRecovery(String issuer_dn, String certificate_serial_number) throws Exception {
+    public ApiResponse<Map<String, Object>> markKeyRecovery(String issuer_dn, String certificate_serial_number) throws Exception {
         SSLContext sslContext = ejbTLSConnectionUtils.createSSLContext();
         String url = certV2Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "keyrecovery";
         HttpRequest request = httpUtils.build(url, "PUT", null);

@@ -16,27 +16,27 @@ public class CertificateV1Controller {
 
     @GetMapping("/status")
     public ApiResponse<Map<String, Object>> getCaStatus() throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.getStatus()).build();
+        return certificateV1Service.getStatus();
     }
 
     @GetMapping("/expired")
     public ApiResponse<Map<String, Object>> getExpiredCert(@RequestParam Integer days,@RequestParam Integer offset, @RequestParam Integer maxNumberOfResults) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.getExpiredCerts(days, offset, maxNumberOfResults)).build();
+        return certificateV1Service.getExpiredCerts(days, offset, maxNumberOfResults);
     }
 
     @GetMapping("/revocationstatus/{issuer_dn}/{certificate_serial_number}")
     public ApiResponse<Map<String, Object>> getRevocationStatus(@PathVariable String issuer_dn, @PathVariable String certificate_serial_number) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.checkRevocationStatus(issuer_dn, certificate_serial_number)).build();
+        return certificateV1Service.checkRevocationStatus(issuer_dn, certificate_serial_number);
     }
 
     @GetMapping("/revoke/{issuer_dn}/{certificate_serial_number}")
     public ApiResponse<Map<String, Object>> revoke(@PathVariable String issuer_dn, @PathVariable String certificate_serial_number) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.revoke(issuer_dn, certificate_serial_number)).build();
+        return certificateV1Service.revoke(issuer_dn, certificate_serial_number);
     }
 
     @PostMapping("/search")
     public ApiResponse<Map<String, Object>> searchCertificate(@RequestBody Map<String, Object> searchCertificateRequest) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.searchCertificate(searchCertificateRequest)).build();
+        return certificateV1Service.searchCertificate(searchCertificateRequest);
     }
 //    @PostMapping("/search")
 //    public ApiResponse<Map<String, Object>> searchCertificate(@RequestBody SearchCertificateRequest searchCertificateRequest) throws Exception {
@@ -45,22 +45,22 @@ public class CertificateV1Controller {
 
     @PostMapping("/enroll")
     public ApiResponse<Map<String, Object>> enrollCertificate(@RequestBody EnrollRequest enrollRequest) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.enrollCertificate(enrollRequest)).build();
+        return certificateV1Service.enrollCertificate(enrollRequest);
     }
 
     @PostMapping("/finalize/{request_id}")
     public ApiResponse<Map<String, Object>> finalizeEnroll(@PathVariable String request_id,@RequestBody FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.finalizeEnrollCertificate(request_id,finalizeEnrollRequest)).build();
+        return certificateV1Service.finalizeEnrollCertificate(request_id,finalizeEnrollRequest);
     }
 
     @PostMapping("/enrollKeyStore")
     public ApiResponse<Map<String, Object>> enrollKeyStore(@RequestBody EnrollKeyStoreRequest enrollKeyStoreRequest) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.enrollKeyStore(enrollKeyStoreRequest)).build();
+        return certificateV1Service.enrollKeyStore(enrollKeyStoreRequest);
     }
 
     @PostMapping("/certificateRequest")
     public ApiResponse<Map<String, Object>> certificateRequest(@RequestBody CertificateRequest certificateRequest) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.certificateRequest(certificateRequest)).build();
+        return certificateV1Service.certificateRequest(certificateRequest);
     }
 
 }

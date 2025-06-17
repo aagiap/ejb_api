@@ -26,7 +26,7 @@ public class CaV1Controller {
 
     @GetMapping("/status")
     public ApiResponse<Map<String, Object>> getCaStatus() throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(caV1Service.getCaStatus()).build();
+        return caV1Service.getCaStatus();
     }
 
     // không tải được cert của ManagementCA
@@ -47,17 +47,17 @@ public class CaV1Controller {
 
     @GetMapping("/getListCa")
     public ApiResponse<Map<String, Object>> getLastestCrl(@RequestParam boolean includeExternal) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(caV1Service.getListCa(includeExternal)).build();
+        return caV1Service.getListCa(includeExternal);
     }
 
     @PostMapping("/{issuerDn}/import-crl")
     public ApiResponse<Map<String, Object>> importCRL(@PathVariable String issuerDn, @RequestPart("crlFile") MultipartFile crlFile) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(caV1Service.importCrl(issuerDn, crlFile)).build();
+        return caV1Service.importCrl(issuerDn, crlFile);
     }
 
     @PostMapping("/createCrl/{issuer_dn}")
     public ApiResponse<Map<String, Object>> createCrl(@PathVariable String issuer_dn, @RequestParam boolean deltacrl) throws Exception {
-        return ApiResponse.<Map<String, Object>>builder().response(caV1Service.createCrl(issuer_dn, deltacrl)).build();
+        return caV1Service.createCrl(issuer_dn, deltacrl);
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.ws_cert.utils;
 
 
+import com.example.ws_cert.dto.response.ApiResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -110,14 +111,44 @@ private final ObjectMapper objectMapper = new ObjectMapper(); // dùng 1 lần d
 //        );
 //    }
 
-    public Map<String, Object> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
+//    public Map<String, Object> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
+//        HttpClient client = HttpClient.newBuilder()
+//                .sslContext(sslContext)
+//                .build();
+//
+//        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//        ObjectMapper mapper = new ObjectMapper();
+//        return mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
+//    }
+
+    public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
+        ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
         HttpClient client = HttpClient.newBuilder()
                 .sslContext(sslContext)
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
+        apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {}));
+        apiResponse.setMessage(getResponseMessage(response.statusCode()));
+        apiResponse.setStatus(response.statusCode());
+        return apiResponse;
+    }
+
+    private String getResponseMessage(Integer statusCode) {
+        switch (statusCode){
+            case 200: return "OK";
+            case 201: return "Created";
+            case 202: return "Accepted";
+            case 400: return "Bad Request";
+            case 403: return "Forbidden";
+            case 404: return "Not Found";
+            case 409: return "Conflict";
+            case 413: return "Payload Too Large";
+            case 422: return "Unprocessable Entity";
+            case 500: return "Internal Server Error";
+            case 503: return "Service Unavailable";
+        }
+        return "Unknown Status Code: ";
     }
 }
