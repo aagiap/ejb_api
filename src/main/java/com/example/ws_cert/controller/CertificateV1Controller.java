@@ -20,28 +20,31 @@ public class CertificateV1Controller {
     }
 
     @GetMapping("/expired")
-    public ApiResponse<Map<String, Object>> getExpiredCert(@RequestParam Integer days,@RequestParam Integer offset, @RequestParam Integer maxNumberOfResults) throws Exception {
+    public ApiResponse<Map<String, Object>> getExpiredCert(@RequestParam(defaultValue = "false") Integer days,
+                                                           @RequestParam(defaultValue = "false") Integer offset,
+                                                           @RequestParam(defaultValue = "false") Integer maxNumberOfResults) throws Exception {
         return certificateV1Service.getExpiredCerts(days, offset, maxNumberOfResults);
     }
 
     @GetMapping("/revocationstatus/{issuer_dn}/{certificate_serial_number}")
-    public ApiResponse<Map<String, Object>> getRevocationStatus(@PathVariable String issuer_dn, @PathVariable String certificate_serial_number) throws Exception {
+    public ApiResponse<Map<String, Object>> getRevocationStatus(@PathVariable String issuer_dn,
+                                                                @PathVariable String certificate_serial_number) throws Exception {
         return certificateV1Service.checkRevocationStatus(issuer_dn, certificate_serial_number);
     }
 
-    @GetMapping("/revoke/{issuer_dn}/{certificate_serial_number}")
-    public ApiResponse<Map<String, Object>> revoke(@PathVariable String issuer_dn, @PathVariable String certificate_serial_number) throws Exception {
-        return certificateV1Service.revoke(issuer_dn, certificate_serial_number);
+    @PutMapping("/revoke/{issuer_dn}/{certificate_serial_number}")
+    public ApiResponse<Map<String, Object>> revoke(@PathVariable String issuer_dn,
+                                                   @PathVariable String certificate_serial_number,
+                                                   @RequestParam(required = false) String reason,
+                                                   @RequestParam(required = false) String date,
+                                                   @RequestParam(required = false) String invalidity_date) throws Exception {
+        return certificateV1Service.revoke(issuer_dn, certificate_serial_number, reason, date, invalidity_date);
     }
 
     @PostMapping("/search")
     public ApiResponse<Map<String, Object>> searchCertificate(@RequestBody Map<String, Object> searchCertificateRequest) throws Exception {
         return certificateV1Service.searchCertificate(searchCertificateRequest);
     }
-//    @PostMapping("/search")
-//    public ApiResponse<Map<String, Object>> searchCertificate(@RequestBody SearchCertificateRequest searchCertificateRequest) throws Exception {
-//        return ApiResponse.<Map<String, Object>>builder().response(certificateV1Service.searchCertificate(searchCertificateRequest)).build();
-//    }
 
     @PostMapping("/enroll")
     public ApiResponse<Map<String, Object>> enrollCertificate(@RequestBody EnrollRequest enrollRequest) throws Exception {
@@ -49,7 +52,8 @@ public class CertificateV1Controller {
     }
 
     @PostMapping("/finalize/{request_id}")
-    public ApiResponse<Map<String, Object>> finalizeEnroll(@PathVariable String request_id,@RequestBody FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> finalizeEnroll(@PathVariable String request_id,
+                                                           @RequestBody FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
         return certificateV1Service.finalizeEnrollCertificate(request_id,finalizeEnrollRequest);
     }
 

@@ -5,58 +5,24 @@ import com.example.ws_cert.dto.response.ApiResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.entity.EntityBuilder;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpEntity;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class HttpUtils {
-//    public HttpRequest buildHttpRequest(String url, String method, String body, Map<String, String> headers) {
-//        HttpRequest.Builder builder = HttpRequest.newBuilder()
-//                .uri(URI.create(url));
-//
-//        switch (method.toUpperCase()) {
-//            case "GET" -> builder.GET();
-//            case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
-//            case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofString(body != null ? body : ""));
-//            case "DELETE" -> builder.DELETE();
-//            default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
-//        }
-//
-//        if (headers != null) {
-//            headers.forEach(builder::header);
-//        }
-//
-//        return builder.build();
-//    }
-//
-//
-//    public HttpRequest build(String url, String method, String body) {
-//        return buildHttpRequest(url, method, body, Map.of("Content-Type", "application/json"));
-//    }
-private final ObjectMapper objectMapper = new ObjectMapper(); // dùng 1 lần duy nhất
+
+
+private final ObjectMapper objectMapper = new ObjectMapper();
 
     public HttpRequest buildHttpRequest(String url, String method, Object body, Map<String, String> headers) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -90,36 +56,6 @@ private final ObjectMapper objectMapper = new ObjectMapper(); // dùng 1 lần d
         return buildHttpRequest(url, method, body, Map.of("Content-Type", "application/json"));
     }
 
-    public ResponseEntity<String> buildResponse(HttpResponse<String> response){
-        return ResponseEntity.status(response.statusCode())
-                .body(response.body());
-    }
-
-//    // Multipart request (for file upload)
-//    public String sendMultipartRequest(String url, File file, String fileFieldName) throws IOException {
-//        HttpPost post = new HttpPost(url);
-//
-//        HttpEntity multipart = EntityBuilder.create()
-//                .setContentType(ContentType.MULTIPART_FORM_DATA)
-//                .setFile(file)
-//                .build();
-//
-//        post.setEntity(multipart);
-//
-//        return httpClient.execute(post, response ->
-//                new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8)
-//        );
-//    }
-
-//    public Map<String, Object> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
-//        HttpClient client = HttpClient.newBuilder()
-//                .sslContext(sslContext)
-//                .build();
-//
-//        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//        ObjectMapper mapper = new ObjectMapper();
-//        return mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
-//    }
 
     public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
         ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
@@ -136,19 +72,54 @@ private final ObjectMapper objectMapper = new ObjectMapper(); // dùng 1 lần d
     }
 
     private String getResponseMessage(Integer statusCode) {
-        switch (statusCode){
-            case 200: return "OK";
-            case 201: return "Created";
-            case 202: return "Accepted";
-            case 400: return "Bad Request";
-            case 403: return "Forbidden";
-            case 404: return "Not Found";
-            case 409: return "Conflict";
-            case 413: return "Payload Too Large";
-            case 422: return "Unprocessable Entity";
-            case 500: return "Internal Server Error";
-            case 503: return "Service Unavailable";
-        }
-        return "Unknown Status Code: ";
+        return switch (statusCode) {
+            case 200 -> "OK";
+            case 201 -> "Created";
+            case 202 -> "Accepted";
+            case 400 -> "Bad Request";
+            case 403 -> "Forbidden";
+            case 404 -> "Not Found";
+            case 409 -> "Conflict";
+            case 413 -> "Payload Too Large";
+            case 422 -> "Unprocessable Entity";
+            case 500 -> "Internal Server Error";
+            case 503 -> "Service Unavailable";
+            default -> "Unknown Status Code";
+        };
     }
+
+    public String appendQueryParams(String baseUrl, Map<String, String> params) {
+        if (params == null || params.isEmpty()) return baseUrl;
+
+        String queryString = params.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && !entry.getValue().isBlank())
+                .map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" +
+                        URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
+
+        if (queryString.isEmpty()) return baseUrl;
+
+        return baseUrl + (baseUrl.contains("?") ? "&" : "?") + queryString;
+    }
+
+    public String encodePathSegment(String segment) {
+        return segment.replace(" ", "%20")
+                .replace("+", "%2B")
+                .replace("/", "%2F")
+                .replace("=", "=");
+    }
+
+//public String appendQueryParams(String baseUrl, Map<String, String> params) {
+//    if (params == null || params.isEmpty()) return baseUrl;
+//
+//    String queryString = params.entrySet().stream()
+//            .filter(entry -> entry.getValue() != null && !entry.getValue().isBlank())
+//            .map(entry -> entry.getKey() + "=" + entry.getValue())
+//            .collect(Collectors.joining("&"));
+//
+//    if (queryString.isEmpty()) return baseUrl;
+//
+//    return baseUrl + (baseUrl.contains("?") ? "&" : "?") + queryString;
+//}
+
 }

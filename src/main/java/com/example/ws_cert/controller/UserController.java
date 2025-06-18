@@ -5,7 +5,6 @@ import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

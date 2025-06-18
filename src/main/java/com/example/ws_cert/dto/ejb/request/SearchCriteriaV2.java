@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchCertificateRequest {
-    private List<CertificateSearchCriteriaV1> criteria;
-    private Integer max_number_of_results;
+public class SearchCriteriaV2 {
+    private String property;
+    private String value;
+    private String operation;
 }

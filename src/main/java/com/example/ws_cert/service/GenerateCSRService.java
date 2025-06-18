@@ -1,6 +1,6 @@
 package com.example.ws_cert.service;
 
-import com.example.ws_cert.entity.SubjectDN;
+import com.example.ws_cert.dto.SubjectDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
@@ -39,7 +39,7 @@ public class GenerateCSRService {
      * @param keyPair cặp khóa vừa sinh
      * @return đối tượng CSR
      */
-    public PKCS10CertificationRequest generateCSR(KeyPair keyPair,SubjectDN subjectDNC) throws Exception {
+    public PKCS10CertificationRequest generateCSR(KeyPair keyPair, SubjectDN subjectDNC) throws Exception {
 
         // Thông tin định danh cho CSR: CN, O, C,...
         String subjectDN = subjectDNC.toString();

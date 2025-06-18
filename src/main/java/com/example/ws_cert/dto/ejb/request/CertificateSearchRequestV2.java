@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class SearchCertificateRequest {
-    private List<CertificateSearchCriteriaV1> criteria;
-    private Integer max_number_of_results;
+@NoArgsConstructor
+public class CertificateSearchRequestV2 {
+    private Pagination pagination;
+    private List<SearchCriteriaV2> criteria;
+    private Sort sort;
 }

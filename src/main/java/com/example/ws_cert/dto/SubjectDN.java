@@ -1,4 +1,4 @@
-package com.example.ws_cert.entity;
+package com.example.ws_cert.dto;
 
 
 import lombok.Getter;

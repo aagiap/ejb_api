@@ -1,6 +1,6 @@
 package com.example.ws_cert.controller;
 
-import com.example.ws_cert.entity.SubjectDN;
+import com.example.ws_cert.dto.SubjectDN;
 import com.example.ws_cert.service.GenerateCSRService;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
