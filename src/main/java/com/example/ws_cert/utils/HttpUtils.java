@@ -2,6 +2,9 @@ package com.example.ws_cert.utils;
 
 
 import com.example.ws_cert.dto.response.ApiResponse;
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.exception.EjbcaStatusCode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 public class HttpUtils {
 
 
-private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public HttpRequest buildHttpRequest(String url, String method, Object body, Map<String, String> headers) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -33,7 +36,7 @@ private final ObjectMapper objectMapper = new ObjectMapper();
             try {
                 jsonBody = objectMapper.writeValueAsString(body);
             } catch (Exception e) {
-                throw new RuntimeException("Failed to serialize body to JSON", e);
+                throw new AppException(ErrorCode.FAILED_TO_SERIALIZE_BODY_TO_JSON);
             }
         }
 
@@ -42,7 +45,7 @@ private final ObjectMapper objectMapper = new ObjectMapper();
             case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofString(jsonBody));
             case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofString(jsonBody));
             case "DELETE" -> builder.DELETE();
-            default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
+            default -> throw new AppException(ErrorCode.UNSUPPORTED_HTTP_METHOD);
         }
 
         if (headers != null) {
@@ -58,17 +61,27 @@ private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
-        ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
-        HttpClient client = HttpClient.newBuilder()
-                .sslContext(sslContext)
-                .build();
+        try {
+            ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
+            HttpClient client = HttpClient.newBuilder()
+                    .sslContext(sslContext)
+                    .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapper = new ObjectMapper();
-        apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {}));
-        apiResponse.setMessage(getResponseMessage(response.statusCode()));
-        apiResponse.setStatus(response.statusCode());
-        return apiResponse;
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            ObjectMapper mapper = new ObjectMapper();
+            apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
+            }));
+            if (response.statusCode() > 202) {
+                apiResponse.setStatus(EjbcaStatusCode.EJBCA_ERROR.getCode());
+                apiResponse.setMessage(EjbcaStatusCode.EJBCA_ERROR.getReasonPhrase() + " - " + getResponseMessage(response.statusCode()));
+            } else {
+                apiResponse.setMessage(getResponseMessage(response.statusCode()));
+                apiResponse.setStatus(response.statusCode());
+            }
+            return apiResponse;
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_GET_RESPONSE);
+        }
     }
 
     private String getResponseMessage(Integer statusCode) {

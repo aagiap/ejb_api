@@ -39,7 +39,7 @@ public class CaV1Service {
 
     public ApiResponse<Map<String, Object>> getCaStatus() throws Exception {
         String url = caV1Url + "/status";
-        HttpRequest request = httpUtils.build(url, "GET", null);
+        HttpRequest request = httpUtils.build(url, "POST", null);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 

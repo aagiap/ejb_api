@@ -68,10 +68,4 @@ public class GenerateCSRService {
 
     }
 
-    public static void main(String[] args) throws Exception {
-        //KeyPair keyPair = generateKeyPair();
-        //PKCS10CertificationRequest csr = generateCSR(keyPair);
-        //System.out.println(pemCSR(csr));
-    }
-
 }

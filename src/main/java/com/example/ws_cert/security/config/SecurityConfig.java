@@ -32,7 +32,7 @@ public class SecurityConfig {
     }
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/auth/login", "/auth/signup", "/ca-v1/**", "/cert-v1/**", "/cert-v2/**", "/generateCSR", "/cert/register"
+            "/auth/login", "/auth/signup", "/cert-v1/**", "/cert-v2/**", "/generateCSR", "/cert/register"
     };
 
     @Bean
@@ -51,7 +51,11 @@ public class SecurityConfig {
                         // Role-based endpoints
                         .requestMatchers("/users/create/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/users/getAll/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/ca-v1/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/cert-v1/certificate-request").hasAuthority("ROLE_USER")
+                        .requestMatchers("/cert-v1/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/cert-v2/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/cert-v1/enroll").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )

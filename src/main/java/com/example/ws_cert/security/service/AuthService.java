@@ -4,6 +4,8 @@ import com.example.ws_cert.constant.UserRole;
 import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.entity.Role;
 import com.example.ws_cert.entity.User;
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
 import com.example.ws_cert.mapper.UserMapper;
 import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
@@ -46,7 +48,7 @@ public class AuthService {
         try {
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
-            throw new RuntimeException("User already exists", exception);
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         return userMapper.toUserResponse(user);
