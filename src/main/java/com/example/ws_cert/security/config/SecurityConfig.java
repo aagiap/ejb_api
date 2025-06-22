@@ -1,5 +1,7 @@
 package com.example.ws_cert.security.config;
 
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
 import com.example.ws_cert.security.filter.JwtAuthenticationFilter;
 
 import com.example.ws_cert.security.service.UserDetailsServiceImpl;
@@ -98,7 +100,11 @@ public class SecurityConfig {
      * Required for programmatic authentication (e.g., in /generateToken)
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+        try {
+            return config.getAuthenticationManager();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
     }
 }

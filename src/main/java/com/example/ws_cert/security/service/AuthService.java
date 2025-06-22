@@ -13,12 +13,16 @@ import com.example.ws_cert.security.dto.request.LoginRequest;
 import com.example.ws_cert.security.dto.request.SignUpRequest;
 import com.example.ws_cert.security.dto.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.PropertyValueException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 
 @Service
@@ -37,20 +41,39 @@ public class AuthService {
     }
 
     public UserResponse signUp(SignUpRequest signUpRequest) {
+
         User user = userMapper.toUser(signUpRequest);
+
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        }
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        Role role = roleRepository.findByName(UserRole.ROLE_USER);
+        Role role = roleRepository.findByName(UserRole.ROLE_USER)
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
         roles.add(role);
         user.setRoles(roles);
 
         try {
             user = userRepository.save(user);
-        } catch (DataIntegrityViolationException exception) {
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(ErrorCode.DATA_INTEGRITY_VIOLATION);
         }
-
         return userMapper.toUserResponse(user);
+    }
+
+    public boolean authenticate(LoginRequest request) {
+        User user = userRepository
+                .findByUsername(request.getUsername())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+
+        if (!authenticated) throw new AppException(ErrorCode.WRONG_PASSWORD);
+
+        return true;
+
     }
 }

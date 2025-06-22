@@ -16,14 +16,14 @@ public class CaV1Controller {
 
     //Returns status, API version and EJBCA version.
     @GetMapping("/status")
-    public ApiResponse<Map<String, Object>> getCaStatus() throws Exception {
+    public ApiResponse<Map<String, Object>> getCaStatus() {
         return caV1Service.getCaStatus();
     }
 
     // Get PEM file with the active CA certificate chain.
     // không tải được cert của ManagementCA
     @GetMapping("/cert-download/{subjectDn}")
-    public ApiResponse<Map<String, Object>> ertDownload(@PathVariable String subjectDn) throws Exception {
+    public ApiResponse<Map<String, Object>> ertDownload(@PathVariable String subjectDn) {
         return caV1Service.certDownload(subjectDn);
     }
 
@@ -31,13 +31,13 @@ public class CaV1Controller {
     @GetMapping("/get-latest-crl/{issuer_dn}")
     public ApiResponse<Map<String, Object>> getLastestCrl(@PathVariable String issuer_dn,
                                                           @RequestParam(required = false) boolean deltaCrl,
-                                                          @RequestParam(defaultValue = "0") Integer crlPartitionIndex) throws Exception {
+                                                          @RequestParam(defaultValue = "0") Integer crlPartitionIndex) {
         return caV1Service.getLastestCrl(issuer_dn, deltaCrl, crlPartitionIndex);
     }
 
     // Returns the Response containing the list of CAs with general information per CA as Json
     @GetMapping("/get-list-ca")
-    public ApiResponse<Map<String, Object>> getLastestCrl(@RequestParam(defaultValue = "false") boolean includeExternal) throws Exception {
+    public ApiResponse<Map<String, Object>> getLastestCrl(@RequestParam(defaultValue = "false") boolean includeExternal) {
         return caV1Service.getListCa(includeExternal);
     }
 

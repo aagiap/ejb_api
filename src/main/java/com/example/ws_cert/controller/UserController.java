@@ -1,5 +1,6 @@
 package com.example.ws_cert.controller;
 
+import com.example.ws_cert.constant.ApiSuccessCode;
 import com.example.ws_cert.dto.request.UserCreationRequest;
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.dto.response.UserResponse;
@@ -19,17 +20,32 @@ public class UserController {
 
     @PostMapping("/create")
     ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
-        return ApiResponse.<UserResponse>builder().response(userService.createUser(request)).build();
+        ApiSuccessCode apiSuccessCode = ApiSuccessCode.CREATED;
+        return ApiResponse.<UserResponse>builder()
+                .status(apiSuccessCode.getCode())
+                .message(apiSuccessCode.getMessage())
+                .response(userService.createUser(request))
+                .build();
     }
 
     @GetMapping("/getAll")
     ApiResponse<List<UserResponse>> getUsers() {
-        return ApiResponse.<List<UserResponse>>builder().response(userService.getUsers()).build();
+        ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
+        return ApiResponse.<List<UserResponse>>builder()
+                .status(apiSuccessCode.getCode())
+                .message(apiSuccessCode.getMessage())
+                .response(userService.getUsers())
+                .build();
     }
 
     @GetMapping("/getMyInfo")
     ApiResponse<UserResponse> getMyInfo() {
-        return ApiResponse.<UserResponse>builder().response(userService.getMyInfo()).build();
+        ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
+        return ApiResponse.<UserResponse>builder()
+                .status(apiSuccessCode.getCode())
+                .message(apiSuccessCode.getMessage())
+                .response(userService.getMyInfo())
+                .build();
     }
 
 }

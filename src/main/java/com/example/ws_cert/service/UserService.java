@@ -12,6 +12,7 @@ import com.example.ws_cert.mapper.UserMapper;
 import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,17 +33,23 @@ public class UserService {
 
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        Role role = roleRepository.findByName(UserRole.valueOf(request.getRole()));
+        Role role = roleRepository.findByName(UserRole.valueOf(request.getRole()))
+                .orElseThrow(() -> new AppException(ErrorCode.DATA_INTEGRITY_VIOLATION));
+
         roles.add(role);
         user.setRoles(roles);
 
         try {
             user = userRepository.save(user);
-        } catch (DataIntegrityViolationException exception) {
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        }  catch (DataIntegrityViolationException exception) {
+            throw new AppException(ErrorCode.DATA_INTEGRITY_VIOLATION);
         }
 
         return userMapper.toUserResponse(user);
@@ -58,9 +65,9 @@ public class UserService {
     }
 
 
-    public void deleteUser(Integer userId) {
-        userRepository.deleteById(userId);
-    }
+//    public void deleteUser(Integer userId) {
+//        userRepository.deleteById(userId);
+//    }
 
 
     public List<UserResponse> getUsers() {

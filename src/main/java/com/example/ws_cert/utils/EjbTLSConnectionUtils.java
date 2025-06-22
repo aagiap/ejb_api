@@ -1,5 +1,7 @@
 package com.example.ws_cert.utils;
 
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,7 @@ import java.security.KeyStoreException;
 public class EjbTLSConnectionUtils {
 
     @Value("${ejbca.keystore.file}")
-    private  String keystoreFileUrl;
+    private String keystoreFileUrl;
 
     @Value("${ejbca.keystore.password}")
     private String keystorePassword;
@@ -33,47 +35,54 @@ public class EjbTLSConnectionUtils {
     private String truststoreType;
 
 
+    public SSLContext createSSLContext() {
+        try {
+            // Load client keystore
+            KeyStore keyStore = loadStore(keystoreFileUrl, keystoreType, keystorePassword);
 
-    public SSLContext createSSLContext() throws Exception {
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(keyStore, keystorePassword.toCharArray());
 
-        // Load client keystore
-        KeyStore keyStore = loadStore(keystoreFileUrl, keystoreType, keystorePassword);
+            // Load truststore (JKS or PKCS12 depending on your file)
+            KeyStore trustStore = loadStore(truststoreFileUrl, truststoreType, truststorePassword);
 
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(keyStore, keystorePassword.toCharArray());
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(trustStore);
 
-        // Load truststore (JKS or PKCS12 depending on your file)
-        KeyStore trustStore = loadStore(truststoreFileUrl, truststoreType, truststorePassword);
+            // Initialize SSL context
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        tmf.init(trustStore);
+            return sslContext;
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_CREATE_SSL_CONTEXT_WITH_EJBCA);
+        }
 
-        // Initialize SSL context
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-
-        return sslContext;
     }
 
-    private KeyStore loadStore(String storePath, String storeType, String password) throws KeyStoreException {
+    private KeyStore loadStore(String storePath, String storeType, String password) {
+        try {
         KeyStore keyStore = KeyStore.getInstance(storeType);
-        if( storePath.startsWith("classpath:")) {
+        if (storePath.startsWith("classpath:")) {
             String classpathResource = storePath.substring("classpath:".length());
             try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(classpathResource)) {
                 if (inputStream == null) {
-                    throw new IllegalArgumentException("Keystore not found in classpath: " + classpathResource);
+                    throw new AppException(ErrorCode.KEYSTORE_NOT_FOUND);
                 }
                 keyStore.load(inputStream, password.toCharArray());
             } catch (Exception e) {
-                throw new RuntimeException("Failed to load keystore from classpath: " + classpathResource, e);
+                throw new AppException(ErrorCode.FAILED_TO_LOAD_KEY_STORE_FROM_FILE);
             }
         } else {
             try (FileInputStream fileInputStream = new FileInputStream(storePath)) {
                 keyStore.load(fileInputStream, password.toCharArray());
             } catch (Exception e) {
-                throw new RuntimeException("Failed to load keystore from file: " + storePath, e);
+                throw new AppException(ErrorCode.FAILED_TO_LOAD_KEY_STORE_FROM_FILE);
             }
         }
         return keyStore;
+        } catch (KeyStoreException exception){
+            throw new AppException(ErrorCode.FAILED_TO_LOAD_KEYSTORE);
+        }
     }
 }

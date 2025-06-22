@@ -1,6 +1,8 @@
 package com.example.ws_cert.service;
 
 import com.example.ws_cert.dto.response.ApiResponse;
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
 import com.example.ws_cert.utils.HttpUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
@@ -37,21 +40,21 @@ public class CaV1Service {
     }
 
 
-    public ApiResponse<Map<String, Object>> getCaStatus() throws Exception {
+    public ApiResponse<Map<String, Object>> getCaStatus() {
         String url = caV1Url + "/status";
         HttpRequest request = httpUtils.build(url, "POST", null);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
 
-    public ApiResponse<Map<String, Object>> certDownload(String subjectDn) throws Exception {
+    public ApiResponse<Map<String, Object>> certDownload(String subjectDn) {
         String url = caV1Url + "/" + subjectDn + "/certificate/download";
         HttpRequest request = httpUtils.build(url, "GET", null);
 
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> getLastestCrl(String issuer_dn, boolean deltaCrl, Integer crlPartitionIndex) throws Exception {
+    public ApiResponse<Map<String, Object>> getLastestCrl(String issuer_dn, boolean deltaCrl, Integer crlPartitionIndex) {
         String url = caV1Url + "/" + issuer_dn + "/getLatestCrl";
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("deltaCrl", String.valueOf(deltaCrl));
@@ -63,7 +66,7 @@ public class CaV1Service {
 
 
     //Returns the Response containing the list of CAs with general information per CA as Json
-    public ApiResponse<Map<String, Object>> getListCa(boolean includeExternal) throws Exception {
+    public ApiResponse<Map<String, Object>> getListCa(boolean includeExternal) {
         String url = caV1Url + "?includeExternal=" + includeExternal;
         HttpRequest request = httpUtils.build(url, "GET", null);
 
@@ -71,7 +74,7 @@ public class CaV1Service {
     }
 
 
-    public ApiResponse<Map<String, Object>> importCrl(String issuerDn, MultipartFile crlFile) throws Exception {
+    public ApiResponse<Map<String, Object>> importCrl(String issuerDn, MultipartFile crlFile) {
 
         String boundary = "----JavaMultipartBoundary" + System.currentTimeMillis();
 
@@ -88,12 +91,17 @@ public class CaV1Service {
         String filePartFooter = "\r\n--" + boundary + "--\r\n";
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputStream.write(crlPartitionIndexPart.getBytes(StandardCharsets.UTF_8));
-        outputStream.write(filePartHeader.getBytes(StandardCharsets.UTF_8));
-        outputStream.write(crlFile.getBytes());
-        outputStream.write(filePartFooter.getBytes(StandardCharsets.UTF_8));
 
+        try {
+            outputStream.write(crlPartitionIndexPart.getBytes(StandardCharsets.UTF_8));
+            outputStream.write(filePartHeader.getBytes(StandardCharsets.UTF_8));
+            outputStream.write(crlFile.getBytes());
+            outputStream.write(filePartFooter.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new AppException(ErrorCode.FAILED_TO_READ_CRL_FILE);
+        }
         byte[] requestBody = outputStream.toByteArray();
+
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(caV1Url + "/" + URLEncoder.encode(issuerDn, StandardCharsets.UTF_8) + "/importcrl"))
@@ -105,7 +113,7 @@ public class CaV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> createCrl(String issuer_dn, boolean deltacrl) throws Exception {
+    public ApiResponse<Map<String, Object>> createCrl(String issuer_dn, boolean deltacrl) {
         String url = caV1Url + "/" + issuer_dn + "/createcrl" + "?deltacrl=" + deltacrl;
         HttpRequest request = httpUtils.build(url, "POST", null);
 

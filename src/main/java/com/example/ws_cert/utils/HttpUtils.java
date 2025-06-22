@@ -60,7 +60,7 @@ public class HttpUtils {
     }
 
 
-    public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) throws java.io.IOException, InterruptedException {
+    public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) {
         try {
             ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
             HttpClient client = HttpClient.newBuilder()
@@ -71,35 +71,17 @@ public class HttpUtils {
             ObjectMapper mapper = new ObjectMapper();
             apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
             }));
-            if (response.statusCode() > 202) {
-                apiResponse.setStatus(EjbcaStatusCode.EJBCA_ERROR.getCode());
-                apiResponse.setMessage(EjbcaStatusCode.EJBCA_ERROR.getReasonPhrase() + " - " + getResponseMessage(response.statusCode()));
-            } else {
-                apiResponse.setMessage(getResponseMessage(response.statusCode()));
-                apiResponse.setStatus(response.statusCode());
-            }
+
+            EjbcaStatusCode ejbcaStatus = EjbcaStatusCode.fromCode(response.statusCode());
+                apiResponse.setStatus(ejbcaStatus.getCode());
+                apiResponse.setMessage(ejbcaStatus.getMessage());
+
             return apiResponse;
         } catch (Exception e) {
             throw new AppException(ErrorCode.FAILED_TO_GET_RESPONSE);
         }
     }
 
-    private String getResponseMessage(Integer statusCode) {
-        return switch (statusCode) {
-            case 200 -> "OK";
-            case 201 -> "Created";
-            case 202 -> "Accepted";
-            case 400 -> "Bad Request";
-            case 403 -> "Forbidden";
-            case 404 -> "Not Found";
-            case 409 -> "Conflict";
-            case 413 -> "Payload Too Large";
-            case 422 -> "Unprocessable Entity";
-            case 500 -> "Internal Server Error";
-            case 503 -> "Service Unavailable";
-            default -> "Unknown Status Code";
-        };
-    }
 
     public String appendQueryParams(String baseUrl, Map<String, String> params) {
         if (params == null || params.isEmpty()) return baseUrl;

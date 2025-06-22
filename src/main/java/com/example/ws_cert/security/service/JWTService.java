@@ -1,6 +1,8 @@
 package com.example.ws_cert.security.service;
 
 
+import com.example.ws_cert.exception.AppException;
+import com.example.ws_cert.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -116,17 +118,21 @@ public class JWTService {
     }
 
     @PostConstruct
-    public void loadKeys() throws Exception {
+    public void loadKeys() {
         // Load private key
         try (InputStream inputStream = privateKeyResource.getInputStream()) {
             String privateKeyPEM = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             privateKey = loadPrivateKey(privateKeyPEM);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_LOAD_KEYSTORE);
         }
 
         // Load public key
         try (InputStream inputStream = publicKeyResource.getInputStream()) {
             String publicKeyPEM = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             publicKey = loadPublicKey(publicKeyPEM);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_LOAD_KEYSTORE);
         }
     }
 

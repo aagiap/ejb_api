@@ -32,14 +32,14 @@ public class CertificateV1Service {
         certV1Url = ejbcaUrl + prefixUrl;
     }
 
-    public ApiResponse<Map<String, Object>> getStatus() throws Exception {
+    public ApiResponse<Map<String, Object>> getStatus() {
 
         String url = certV1Url + "/status";
         HttpRequest request = httpUtils.build(url, "GET", null);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> getExpiredCerts(Integer days, Integer offset, Integer maxNumberOfResults) throws Exception {
+    public ApiResponse<Map<String, Object>> getExpiredCerts(Integer days, Integer offset, Integer maxNumberOfResults) {
 
         String url = certV1Url + "/expire";
         Map<String, String> queryParams = new HashMap<>();
@@ -51,7 +51,7 @@ public class CertificateV1Service {
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> checkRevocationStatus(String issuer_dn, String certificate_serial_number) throws Exception {
+    public ApiResponse<Map<String, Object>> checkRevocationStatus(String issuer_dn, String certificate_serial_number) {
 
         String url = certV1Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "revocationstatus";
         HttpRequest request = httpUtils.build(url, "GET", null);
@@ -59,13 +59,13 @@ public class CertificateV1Service {
     }
 
 
-    public ApiResponse<Map<String, Object>> searchCertificate(Map<String, Object> searchCertificateRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> searchCertificate(Map<String, Object> searchCertificateRequest) {
         String url = certV1Url + "/search";
         HttpRequest request = httpUtils.build(url, "POST", searchCertificateRequest);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> revoke(String issuer_dn, String certificate_serial_number, String reason, String date, String invalidity_date) throws Exception {
+    public ApiResponse<Map<String, Object>> revoke(String issuer_dn, String certificate_serial_number, String reason, String date, String invalidity_date) {
         String url = certV1Url + "/" + httpUtils.encodePathSegment(issuer_dn) + "/" + certificate_serial_number + "/" + "revoke";
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("reason", reason);
@@ -77,25 +77,25 @@ public class CertificateV1Service {
     }
 
 
-    public ApiResponse<Map<String, Object>> enrollCertificate(EnrollRequest enrollRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> enrollCertificate(EnrollRequest enrollRequest) {
         String url = certV1Url + "/pkcs10enroll";
         HttpRequest request = httpUtils.build(url, "POST", enrollRequest);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> finalizeEnrollCertificate(String request_id, FinalizeEnrollRequest finalizeEnrollRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> finalizeEnrollCertificate(String request_id, FinalizeEnrollRequest finalizeEnrollRequest) {
         String url = certV1Url + "/" + request_id + "/finalize";
         HttpRequest request = httpUtils.build(url, "POST", finalizeEnrollRequest);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> enrollKeyStore(EnrollKeyStoreRequest enrollKeyStoreRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> enrollKeyStore(EnrollKeyStoreRequest enrollKeyStoreRequest) {
         String url = certV1Url + "/enrollkeystore";
         HttpRequest request = httpUtils.build(url, "POST", enrollKeyStoreRequest);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
 
-    public ApiResponse<Map<String, Object>> certificateRequest(CertificateRequest certificateRequest) throws Exception {
+    public ApiResponse<Map<String, Object>> certificateRequest(CertificateRequest certificateRequest) {
         String url = certV1Url + "/certificaterequest";
         HttpRequest request = httpUtils.build(url, "POST", certificateRequest);
         return httpUtils.getStringObjectMap(sslContext, request);

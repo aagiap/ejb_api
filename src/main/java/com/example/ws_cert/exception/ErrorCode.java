@@ -5,24 +5,28 @@ import org.apache.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    UNAUTHORIZED(401, "Unauthorized", HttpStatus.SC_UNAUTHORIZED),
-    FORBIDDEN(403, "Forbidden", HttpStatus.SC_FORBIDDEN),
-    NOT_FOUND(404, "Not Found", HttpStatus.SC_NOT_FOUND),
-    BAD_REQUEST(400, "Bad Request", HttpStatus.SC_BAD_REQUEST),
+    USER_NOT_EXISTED(1, "User not existed", HttpStatus.SC_NOT_FOUND),
+    USER_ALREADY_EXISTS(2, "User already exists", HttpStatus.SC_BAD_REQUEST),
+    USER_NOT_FOUND(3, "User not found", HttpStatus.SC_BAD_REQUEST),
+    UNAUTHENTICATED(4, "Unauthenticated", HttpStatus.SC_BAD_REQUEST),
+    UNAUTHORIZED(5, "Unauthorized", HttpStatus.SC_UNAUTHORIZED),
+    USER_PASSWORD_IS_NULL(6, "User password is null", HttpStatus.SC_BAD_REQUEST),
+    ROLE_NOT_FOUND(7,"Role not found" , HttpStatus.SC_NOT_FOUND),
+    DATA_INTEGRITY_VIOLATION(8, "Execute SQL statement fails to map the given data", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    WRONG_PASSWORD(9, "Wrong password", HttpStatus.SC_UNAUTHORIZED),
+    VALIDATION_FAILED(10, "Validation failed", HttpStatus.SC_BAD_REQUEST),
+    FAILED_TO_GET_RESPONSE(11, "Failed to get response from other application", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_CREATE_SSL_CONTEXT_WITH_EJBCA(12, "Failed to create SSL context with EJBCA", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_LOAD_KEYSTORE(13, "Failed to load keystore", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_LOAD_KEY_STORE_FROM_FILE(14, "Failed to load keystore from file", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_READ_CRL_FILE(15, "Failed to read CRL file", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    UNSUPPORTED_HTTP_METHOD(16, "Unsupported HTTP method", HttpStatus.SC_HTTP_VERSION_NOT_SUPPORTED),
+    KEYSTORE_NOT_FOUND(17, "Keystore not found", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_SERIALIZE_BODY_TO_JSON(18, "Failed to serialize body to JSON", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
-    // 5xx - Server errors
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
-    SSL_HANDSHAKE_ERROR(500, "SSL Handshake Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
-    SERVICE_UNAVAILABLE(503, "Service Unavailable", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
-    // Custom application errors
-    USER_ALREADY_EXISTS(1001, "User already exists", HttpStatus.SC_BAD_REQUEST),
-    USER_NOT_FOUND(1002, "User not found", HttpStatus.SC_BAD_REQUEST),
-    UNSUPPORTED_HTTP_METHOD(1006, "Unsupported HTTP method", HttpStatus.SC_HTTP_VERSION_NOT_SUPPORTED),
-    FAIL_TO_LOAD_KEYSTORE_FROM_PATH(1007, "Failed to load keystore from path", HttpStatus.SC_INTERNAL_SERVER_ERROR),
-    KEYSTORE_NOT_FOUND(1008, "Keystore not found", HttpStatus.SC_INTERNAL_SERVER_ERROR),
-    FAILED_TO_SERIALIZE_BODY_TO_JSON(1009, "Failed to serialize body to JSON", HttpStatus.SC_INTERNAL_SERVER_ERROR),
-    FAILED_TO_GET_RESPONSE(1010, "Failed to get response", HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    ;
 
     ErrorCode(int code, String message, int httpStatusCode) {
         this.code = code;

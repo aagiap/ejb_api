@@ -135,6 +135,10 @@
             <artifactId>netty-handler</artifactId>
             <version>4.1.109.Final</version> <!-- hoặc bản mới hơn -->
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
 
     </dependencies>
