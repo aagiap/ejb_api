@@ -41,7 +41,7 @@ public class UserService {
 
         HashSet<Role> roles = new HashSet<>();
         Role role = roleRepository.findByName(UserRole.valueOf(request.getRole()))
-                .orElseThrow(() -> new AppException(ErrorCode.DATA_INTEGRITY_VIOLATION));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         roles.add(role);
         user.setRoles(roles);
@@ -65,13 +65,21 @@ public class UserService {
     }
 
 
-//    public void deleteUser(Integer userId) {
-//        userRepository.deleteById(userId);
-//    }
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
 
 
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+    }
+
+    public UserResponse updateUser(Integer userId, UserCreationRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
 

@@ -48,4 +48,24 @@ public class UserController {
                 .build();
     }
 
+    @DeleteMapping("/delete/{id}")
+    ApiResponse<Void> deleteUser(@PathVariable Integer id) {
+        ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
+        userService.deleteUser(id);
+        return ApiResponse.<Void>builder()
+                .status(apiSuccessCode.getCode())
+                .message(apiSuccessCode.getMessage())
+                .build();
+    }
+
+    @PutMapping("/update/{id}")
+    ApiResponse<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserCreationRequest request) {
+        ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
+        return ApiResponse.<UserResponse>builder()
+                .status(apiSuccessCode.getCode())
+                .message(apiSuccessCode.getMessage())
+                .response(userService.updateUser(id, request))
+                .build();
+    }
+
 }

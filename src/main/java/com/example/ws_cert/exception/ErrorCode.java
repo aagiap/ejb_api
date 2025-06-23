@@ -5,14 +5,12 @@ import org.apache.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    USER_NOT_EXISTED(1, "User not existed", HttpStatus.SC_NOT_FOUND),
     USER_ALREADY_EXISTS(2, "User already exists", HttpStatus.SC_BAD_REQUEST),
     USER_NOT_FOUND(3, "User not found", HttpStatus.SC_BAD_REQUEST),
     UNAUTHENTICATED(4, "Unauthenticated", HttpStatus.SC_BAD_REQUEST),
     UNAUTHORIZED(5, "Unauthorized", HttpStatus.SC_UNAUTHORIZED),
-    USER_PASSWORD_IS_NULL(6, "User password is null", HttpStatus.SC_BAD_REQUEST),
     ROLE_NOT_FOUND(7,"Role not found" , HttpStatus.SC_NOT_FOUND),
-    DATA_INTEGRITY_VIOLATION(8, "Execute SQL statement fails to map the given data", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    DATA_INTEGRITY_VIOLATION(8, "There are error performing database operations", HttpStatus.SC_INTERNAL_SERVER_ERROR),
     WRONG_PASSWORD(9, "Wrong password", HttpStatus.SC_UNAUTHORIZED),
     VALIDATION_FAILED(10, "Validation failed", HttpStatus.SC_BAD_REQUEST),
     FAILED_TO_GET_RESPONSE(11, "Failed to get response from other application", HttpStatus.SC_INTERNAL_SERVER_ERROR),
@@ -23,6 +21,10 @@ public enum ErrorCode {
     UNSUPPORTED_HTTP_METHOD(16, "Unsupported HTTP method", HttpStatus.SC_HTTP_VERSION_NOT_SUPPORTED),
     KEYSTORE_NOT_FOUND(17, "Keystore not found", HttpStatus.SC_INTERNAL_SERVER_ERROR),
     FAILED_TO_SERIALIZE_BODY_TO_JSON(18, "Failed to serialize body to JSON", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    CONSTRAINT_VIOLATION(19, "Database integrity constraint violation", HttpStatus.SC_BAD_REQUEST),
+    PROPERTY_VALUE_EXCEPTION(20, "Entity being persisted with a problem.", HttpStatus.SC_BAD_REQUEST),
+    DATA_EXCEPTION(21, "Something was wrong with the SQL statement or the data, in that particular context. ", HttpStatus.SC_BAD_REQUEST),
+
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
