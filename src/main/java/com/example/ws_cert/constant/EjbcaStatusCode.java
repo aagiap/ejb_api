@@ -1,4 +1,4 @@
-package com.example.ws_cert.exception;
+package com.example.ws_cert.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Getter
 public enum EjbcaStatusCode {
-    EJBCA_ERROR(199, "Error from ejbca server", "Exception from ejbca server"),
+    EJBCA_ERROR(199, "Error from ejbca server", "Error from ejbca server"),
     OK(200, "OK", "Successful HTTP request, expect a proper response body. Typically received from a successful GET request."),
     CREATED(201, "Created", "Successful HTTP request. Some entity has been created, e.g. certificate enrolled. Typically received after a successful POST request."),
     ACCEPTED(202, "Accepted", "Request accepted by the server but awaiting processing. Most likely waiting for administrator approval."),

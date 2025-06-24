@@ -1,7 +1,7 @@
 package com.example.ws_cert.utils;
 
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

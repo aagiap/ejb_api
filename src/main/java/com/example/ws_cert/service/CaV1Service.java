@@ -2,7 +2,7 @@ package com.example.ws_cert.service;
 
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.utils.HttpUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

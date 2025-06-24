@@ -5,7 +5,7 @@ import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.entity.Role;
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.mapper.UserMapper;
 import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
@@ -13,16 +13,12 @@ import com.example.ws_cert.security.dto.request.LoginRequest;
 import com.example.ws_cert.security.dto.request.SignUpRequest;
 import com.example.ws_cert.security.dto.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.PropertyValueException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 
 @Service

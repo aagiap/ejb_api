@@ -1,5 +1,6 @@
 package com.example.ws_cert.exception;
 
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.dto.response.ApiResponse;
 //import jakarta.validation.ConstraintViolationException;
 import org.hibernate.exception.DataException;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
         ApiResponse<?> apiResponse = new ApiResponse<>();
 
-        apiResponse.setStatus(errorCode.getCode());
+        apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
 
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getHttpStatusCode())
                 .body(ApiResponse.builder()
-                        .status(errorCode.getCode())
+                        .code(errorCode.getCode())
                         .message(ex.getMessage() != null ? ex.getMessage() : "Unexpected error")
                         .build());
     }
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         ApiResponse<String> apiResponse = new ApiResponse<>();
 
-        apiResponse.setStatus(ErrorCode.VALIDATION_FAILED.getCode());
+        apiResponse.setCode(ErrorCode.VALIDATION_FAILED.getCode());
         apiResponse.setMessage(ErrorCode.VALIDATION_FAILED.getMessage());
 
         apiResponse.setResponse(message);
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ApiResponse<?>> buildError(ErrorCode errorCode, Throwable root) {
         ApiResponse<?> apiResponse = new ApiResponse<>();
-        apiResponse.setStatus(errorCode.getCode());
+        apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage() + ": " + (root != null ? root.getMessage() : "Unknown error"));
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }

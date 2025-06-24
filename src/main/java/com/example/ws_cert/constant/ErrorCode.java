@@ -1,4 +1,4 @@
-package com.example.ws_cert.exception;
+package com.example.ws_cert.constant;
 
 import lombok.Getter;
 import org.apache.http.HttpStatus;

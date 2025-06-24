@@ -1,7 +1,7 @@
 package com.example.ws_cert.security.config;
 
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.security.filter.JwtAuthenticationFilter;
 
 import com.example.ws_cert.security.service.UserDetailsServiceImpl;

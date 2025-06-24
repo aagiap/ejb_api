@@ -2,7 +2,7 @@ package com.example.ws_cert.security.service;
 
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,5 +1,6 @@
 package com.example.ws_cert.exception;
 
+import com.example.ws_cert.constant.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

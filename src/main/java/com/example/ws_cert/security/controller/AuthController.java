@@ -4,7 +4,7 @@ import com.example.ws_cert.constant.ApiSuccessCode;
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.security.dto.request.LoginRequest;
 import com.example.ws_cert.security.dto.request.SignUpRequest;
 import com.example.ws_cert.security.dto.response.LoginResponse;
@@ -13,9 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +45,7 @@ public class AuthController {
             LoginResponse loginResponse = authService.login(loginRequest);
             ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
             return ApiResponse.<LoginResponse>builder()
-                    .status(apiSuccessCode.getCode())
+                    .code(apiSuccessCode.getCode())
                     .message(apiSuccessCode.getMessage())
                     .response(loginResponse)
                     .build();
@@ -62,7 +59,7 @@ public class AuthController {
         UserResponse userResponse = authService.signUp(signUpRequest);
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.CREATED;
         return ApiResponse.<UserResponse>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .response(userResponse)
                 .build();

@@ -3,8 +3,8 @@ package com.example.ws_cert.utils;
 
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
-import com.example.ws_cert.exception.EjbcaStatusCode;
+import com.example.ws_cert.constant.ErrorCode;
+import com.example.ws_cert.constant.EjbcaStatusCode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class HttpUtils {
             }));
 
             EjbcaStatusCode ejbcaStatus = EjbcaStatusCode.fromCode(response.statusCode());
-                apiResponse.setStatus(ejbcaStatus.getCode());
+                apiResponse.setCode(ejbcaStatus.getCode());
                 apiResponse.setMessage(ejbcaStatus.getMessage());
 
             return apiResponse;

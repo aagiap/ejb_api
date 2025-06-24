@@ -1,7 +1,7 @@
 package com.example.ws_cert.security.config;
 
 import com.example.ws_cert.dto.response.ApiResponse;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +46,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setStatus(errorCode.getHttpStatusCode());
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
-                .status(errorCode.getCode())
+                .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
 

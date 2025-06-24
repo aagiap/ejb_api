@@ -7,12 +7,11 @@ import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.entity.Role;
 import com.example.ws_cert.entity.User;
 import com.example.ws_cert.exception.AppException;
-import com.example.ws_cert.exception.ErrorCode;
+import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.mapper.UserMapper;
 import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,16 +40,13 @@ public class UserService {
 
         HashSet<Role> roles = new HashSet<>();
         Role role = roleRepository.findByName(UserRole.valueOf(request.getRole()))
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         roles.add(role);
         user.setRoles(roles);
 
-        try {
             user = userRepository.save(user);
-        }  catch (DataIntegrityViolationException exception) {
-            throw new AppException(ErrorCode.DATA_INTEGRITY_VIOLATION);
-        }
+
 
         return userMapper.toUserResponse(user);
     }
@@ -66,6 +62,8 @@ public class UserService {
 
 
     public void deleteUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userRepository.deleteById(userId);
     }
 
@@ -77,6 +75,9 @@ public class UserService {
     public UserResponse updateUser(Integer userId, UserCreationRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        }
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
@@ -85,10 +86,6 @@ public class UserService {
 
 
 
-//    public UserResponse getUser(String id) {
-//        return userMapper.toUserResponse(
-//                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
-//    }
 
 
 

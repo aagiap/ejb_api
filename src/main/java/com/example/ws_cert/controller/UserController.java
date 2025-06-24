@@ -22,7 +22,7 @@ public class UserController {
     ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.CREATED;
         return ApiResponse.<UserResponse>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .response(userService.createUser(request))
                 .build();
@@ -32,7 +32,7 @@ public class UserController {
     ApiResponse<List<UserResponse>> getUsers() {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
         return ApiResponse.<List<UserResponse>>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .response(userService.getUsers())
                 .build();
@@ -42,7 +42,7 @@ public class UserController {
     ApiResponse<UserResponse> getMyInfo() {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
         return ApiResponse.<UserResponse>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .response(userService.getMyInfo())
                 .build();
@@ -53,7 +53,7 @@ public class UserController {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
         userService.deleteUser(id);
         return ApiResponse.<Void>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .build();
     }
@@ -62,7 +62,7 @@ public class UserController {
     ApiResponse<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserCreationRequest request) {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
         return ApiResponse.<UserResponse>builder()
-                .status(apiSuccessCode.getCode())
+                .code(apiSuccessCode.getCode())
                 .message(apiSuccessCode.getMessage())
                 .response(userService.updateUser(id, request))
                 .build();
