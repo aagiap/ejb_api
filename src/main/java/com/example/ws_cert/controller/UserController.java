@@ -5,6 +5,7 @@ import com.example.ws_cert.dto.request.UserCreationRequest;
 import com.example.ws_cert.dto.response.ApiResponse;
 import com.example.ws_cert.dto.response.UserResponse;
 import com.example.ws_cert.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UserController {
 
 
     @PostMapping("/create")
-    ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.CREATED;
         return ApiResponse.<UserResponse>builder()
                 .code(apiSuccessCode.getCode())
@@ -59,7 +60,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    ApiResponse<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserCreationRequest request) {
+    ApiResponse<UserResponse> updateUser(@PathVariable Integer id,@Valid @RequestBody UserCreationRequest request) {
         ApiSuccessCode apiSuccessCode = ApiSuccessCode.SUCCESS;
         return ApiResponse.<UserResponse>builder()
                 .code(apiSuccessCode.getCode())

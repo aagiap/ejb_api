@@ -12,7 +12,6 @@ import com.example.ws_cert.mapper.UserMapper;
 import com.example.ws_cert.repository.RoleRepository;
 import com.example.ws_cert.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

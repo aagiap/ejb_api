@@ -42,21 +42,22 @@ public class GlobalExceptionHandler {
     }
 
 
-    //  Validation - @Valid DTO (POST/PUT request body)
+    //  Validation - request body
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.joining("; "));
+        ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
         ApiResponse<String> apiResponse = new ApiResponse<>();
 
-        apiResponse.setCode(ErrorCode.VALIDATION_FAILED.getCode());
-        apiResponse.setMessage(ErrorCode.VALIDATION_FAILED.getMessage());
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
 
         apiResponse.setResponse(message);
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(errorCode.getHttpStatusCode())
                 .body(apiResponse);
     }
 
