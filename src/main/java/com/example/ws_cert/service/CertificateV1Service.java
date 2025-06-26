@@ -53,7 +53,8 @@ public class CertificateV1Service {
 
     public ApiResponse<Map<String, Object>> checkRevocationStatus(String issuer_dn, String certificate_serial_number) {
 
-        String url = certV1Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "revocationstatus";
+        String issuerEncode = httpUtils.encodePathSegment(issuer_dn);
+        String url = certV1Url + "/" + issuerEncode + "/" + certificate_serial_number + "/" + "revocationstatus";
         HttpRequest request = httpUtils.build(url, "GET", null);
         return httpUtils.getStringObjectMap(sslContext, request);
     }
