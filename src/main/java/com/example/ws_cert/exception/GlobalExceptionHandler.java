@@ -2,12 +2,11 @@ package com.example.ws_cert.exception;
 
 import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.dto.response.ApiResponse;
-//import jakarta.validation.ConstraintViolationException;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.hibernate.exception.DataException;
 import org.hibernate.PropertyValueException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.stream.Collectors;
 
+@Hidden
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
