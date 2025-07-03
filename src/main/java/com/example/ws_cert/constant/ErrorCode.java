@@ -24,12 +24,16 @@ public enum ErrorCode {
     CONSTRAINT_VIOLATION(17, "Database integrity constraint violation", HttpStatus.SC_BAD_REQUEST),
     PROPERTY_VALUE_EXCEPTION(18, "Entity being persisted with a problem.", HttpStatus.SC_BAD_REQUEST),
     DATA_EXCEPTION(19, "Something was wrong with the SQL statement or the data, in that particular context. ", HttpStatus.SC_BAD_REQUEST),
+    FAILED_TO_PARSE_RESPONSE(20, "Fail to parse response", HttpStatus.SC_BAD_REQUEST),
+    BUILD_IR_MESSAGE_FAILED(21,  "Build ir message failed", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    FAILED_TO_ENCODE_BYTES_CODE(22, "Failed to encode byte code", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    CMP_ERROR(23, "CMP error response", HttpStatus.SC_BAD_REQUEST),
+    EJBCA_REST_API_ERROR_RESPONSE(24, "EJBCA REST API error response", HttpStatus.SC_BAD_REQUEST),
 
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
-    ;
-
+    BUILD_REVOCATION_MESSAGE_FAILED(24, "Build revocation message faile", HttpStatus.SC_INTERNAL_SERVER_ERROR);
     ErrorCode(int code, String message, int httpStatusCode) {
         this.code = code;
         this.message = message;

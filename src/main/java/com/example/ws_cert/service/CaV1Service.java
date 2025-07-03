@@ -24,7 +24,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CaV1Service {
     private final HttpUtils httpUtils;
-    private final SSLContext sslContext;
 
     @Value("${ejbca.url}")
     private String ejbcaUrl;
@@ -43,7 +42,7 @@ public class CaV1Service {
     public ApiResponse<Map<String, Object>> getCaStatus() {
         String url = caV1Url + "/status";
         HttpRequest request = httpUtils.build(url, "POST", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 
@@ -51,7 +50,7 @@ public class CaV1Service {
         String url = caV1Url + "/" + subjectDn + "/certificate/download";
         HttpRequest request = httpUtils.build(url, "GET", null);
 
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> getLastestCrl(String issuer_dn, boolean deltaCrl, Integer crlPartitionIndex) {
@@ -61,7 +60,7 @@ public class CaV1Service {
         queryParams.put("crlPartitionIndex", String.valueOf(crlPartitionIndex));
         url = httpUtils.appendQueryParams(url, queryParams);
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 
@@ -70,7 +69,7 @@ public class CaV1Service {
         String url = caV1Url + "?includeExternal=" + includeExternal;
         HttpRequest request = httpUtils.build(url, "GET", null);
 
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 
@@ -110,14 +109,14 @@ public class CaV1Service {
                 .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
                 .build();
 
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> createCrl(String issuer_dn, boolean deltacrl) {
         String url = caV1Url + "/" + issuer_dn + "/createcrl" + "?deltacrl=" + deltacrl;
         HttpRequest request = httpUtils.build(url, "POST", null);
 
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 

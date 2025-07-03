@@ -17,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CertificateV1Service {
     private final HttpUtils httpUtils;
-    private final SSLContext sslContext;
 
     @Value("${ejbca.url}")
     private String ejbcaUrl;
@@ -36,7 +35,7 @@ public class CertificateV1Service {
 
         String url = certV1Url + "/status";
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> getExpiredCerts(Integer days, Integer offset, Integer maxNumberOfResults) {
@@ -48,7 +47,7 @@ public class CertificateV1Service {
         queryParams.put("maxNumberOfResults", String.valueOf(maxNumberOfResults));
         url = httpUtils.appendQueryParams(url, queryParams);
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> checkRevocationStatus(String issuer_dn, String certificate_serial_number) {
@@ -56,14 +55,14 @@ public class CertificateV1Service {
         String issuerEncode = httpUtils.encodePathSegment(issuer_dn);
         String url = certV1Url + "/" + issuerEncode + "/" + certificate_serial_number + "/" + "revocationstatus";
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 
     public ApiResponse<Map<String, Object>> searchCertificate(Map<String, Object> searchCertificateRequest) {
         String url = certV1Url + "/search";
         HttpRequest request = httpUtils.build(url, "POST", searchCertificateRequest);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> revoke(String issuer_dn, String certificate_serial_number, String reason, String date, String invalidity_date) {
@@ -74,31 +73,31 @@ public class CertificateV1Service {
         queryParams.put("invalidity_date", invalidity_date);
         url = httpUtils.appendQueryParams(url, queryParams);
         HttpRequest request = httpUtils.build(url, "PUT", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
 
     public ApiResponse<Map<String, Object>> enrollCertificate(EnrollRequest enrollRequest) {
         String url = certV1Url + "/pkcs10enroll";
         HttpRequest request = httpUtils.build(url, "POST", enrollRequest);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> finalizeEnrollCertificate(String request_id, FinalizeEnrollRequest finalizeEnrollRequest) {
         String url = certV1Url + "/" + request_id + "/finalize";
         HttpRequest request = httpUtils.build(url, "POST", finalizeEnrollRequest);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> enrollKeyStore(EnrollKeyStoreRequest enrollKeyStoreRequest) {
         String url = certV1Url + "/enrollkeystore";
         HttpRequest request = httpUtils.build(url, "POST", enrollKeyStoreRequest);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> certificateRequest(CertificateRequest certificateRequest) {
         String url = certV1Url + "/certificaterequest";
         HttpRequest request = httpUtils.build(url, "POST", certificateRequest);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 }

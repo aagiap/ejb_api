@@ -7,6 +7,7 @@ import com.example.ws_cert.constant.ErrorCode;
 import com.example.ws_cert.constant.EjbcaStatusCode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,9 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class HttpUtils {
+    private final SSLContext sslContext;
 
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -60,7 +63,7 @@ public class HttpUtils {
     }
 
 
-    public ApiResponse<Map<String, Object>> getStringObjectMap(SSLContext sslContext, HttpRequest request) {
+    public ApiResponse<Map<String, Object>> getStringObjectMap(HttpRequest request) {
         try {
             ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>();
             HttpClient client = HttpClient.newBuilder()
@@ -68,13 +71,17 @@ public class HttpUtils {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
             ObjectMapper mapper = new ObjectMapper();
-            apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
-            }));
+            apiResponse.setResponse(mapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {}));
+
+//            EjbcaStatusCode ejbcaStatus = EjbcaStatusCode.fromCode(response.statusCode());
+//            apiResponse.setCode(ejbcaStatus.getCode());
+//            apiResponse.setMessage(ejbcaStatus.getMessage());
 
             EjbcaStatusCode ejbcaStatus = EjbcaStatusCode.fromCode(response.statusCode());
-                apiResponse.setCode(ejbcaStatus.getCode());
-                apiResponse.setMessage(ejbcaStatus.getMessage());
+            apiResponse.setCode(ejbcaStatus.getCode());
+            apiResponse.setMessage(ejbcaStatus.getMessage());
 
             return apiResponse;
         } catch (Exception e) {
@@ -116,5 +123,42 @@ public class HttpUtils {
 //
 //    return baseUrl + (baseUrl.contains("?") ? "&" : "?") + queryString;
 //}
+
+    private byte[] sendBinary(HttpRequest request) {
+        try {
+            HttpClient client = HttpClient.newBuilder()
+                    .sslContext(sslContext)
+                    .build();
+
+            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            return response.body();
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_GET_RESPONSE);
+        }
+    }
+
+    private HttpRequest buildBinaryRequest(String url, String method, byte[] body) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/pkixcmp");
+
+        switch (method.toUpperCase()) {
+            case "POST" -> builder.POST(HttpRequest.BodyPublishers.ofByteArray(body));
+            case "PUT" -> builder.PUT(HttpRequest.BodyPublishers.ofByteArray(body));
+            default -> throw new AppException(ErrorCode.UNSUPPORTED_HTTP_METHOD);
+        }
+
+        return builder.build();
+    }
+
+
+    public byte[] sendCmpRequest(String cmpUrl, String method, byte[] requestBody) {
+        HttpRequest request = buildBinaryRequest(cmpUrl, method, requestBody);
+        return sendBinary(request);
+    }
+//    public ApiResponse<Map<String, Object>> sendCmpRequest(String cmpUrl,String method, byte[] requestBody) {
+//        HttpRequest request = buildBinaryRequest(cmpUrl, method, requestBody);
+//        return getStringObjectMap(request);
+//    }
 
 }

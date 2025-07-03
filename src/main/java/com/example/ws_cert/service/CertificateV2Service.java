@@ -17,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CertificateV2Service {
     private final HttpUtils httpUtils;
-    private final SSLContext sslContext;
 
     @Value("${ejbca.url}")
     private String ejbcaUrl;
@@ -37,19 +36,19 @@ public class CertificateV2Service {
 
         String url = certV2Url + "/status";
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> markKeyRecovery(String issuer_dn, String certificate_serial_number) {
         String url = certV2Url + "/" + issuer_dn + "/" + certificate_serial_number + "/" + "keyrecovery";
         HttpRequest request = httpUtils.build(url, "PUT", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> getCertProfile(String profile_name) {
         String url = certV2Url + "/profile_name" + profile_name;
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> countActiveCert(Boolean isActive) {
@@ -58,12 +57,12 @@ public class CertificateV2Service {
         queryParams.put("isActive", String.valueOf(isActive));
         url = httpUtils.appendQueryParams(url, queryParams);
         HttpRequest request = httpUtils.build(url, "GET", null);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 
     public ApiResponse<Map<String, Object>> searchCertificate(CertificateSearchRequestV2 certificateSearchRequestV2) {
         String url = certV2Url + "/search";
         HttpRequest request = httpUtils.build(url, "POST", certificateSearchRequestV2);
-        return httpUtils.getStringObjectMap(sslContext, request);
+        return httpUtils.getStringObjectMap(request);
     }
 }

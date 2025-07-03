@@ -18,6 +18,17 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+//    @ExceptionHandler(value = AppException.class)
+//    ResponseEntity<ApiResponse<?>> handlingAppException(AppException exception) {
+//        ErrorCode errorCode = exception.getErrorCode();
+//        ApiResponse<?> apiResponse = new ApiResponse<>();
+//
+//        apiResponse.setCode(errorCode.getCode());
+//        apiResponse.setMessage(errorCode.getMessage());
+//
+//        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+//    }
+
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse<?>> handlingAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
@@ -28,6 +39,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
+
 
 
     @ExceptionHandler(Exception.class)
