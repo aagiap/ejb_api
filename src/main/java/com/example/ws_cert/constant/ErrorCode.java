@@ -33,7 +33,8 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
-    BUILD_CLIENT_IR_MESSAGE_FAILED(26, "Build client certificate message fail", HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    BUILD_CLIENT_IR_MESSAGE_FAILED(26, "Build client certificate message fail", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    UNKNOWN_RESPONSE_TYPE(27, "Un", HttpStatus.SC_INTERNAL_SERVER_ERROR);
     ErrorCode(int code, String message, int httpStatusCode) {
         this.code = code;
         this.message = message;

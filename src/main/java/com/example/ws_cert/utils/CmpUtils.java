@@ -5,16 +5,23 @@ import com.example.ws_cert.dto.ejb.request.CmpIrRequest;
 import com.example.ws_cert.dto.ejb.request.CmpRevocationRequest;
 import com.example.ws_cert.dto.ejb.response.ApiErrorResponse;
 import com.example.ws_cert.dto.ejb.response.CmpIrResponse;
+import com.example.ws_cert.dto.ejb.response.CmpRevocationResponse;
 import com.example.ws_cert.dto.ejb.response.EnrollCertificateResponse;
 import com.example.ws_cert.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.ASN1BitString;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.cmp.*;
+import org.bouncycastle.asn1.ocsp.RevokedInfo;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -40,6 +47,21 @@ public class CmpUtils {
             int bodyType = body.getType();
 
             if (bodyType == PKIBody.TYPE_ERROR) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return true; // Nếu có lỗi trong parsing, coi như có exception
+        }
+    }
+
+    public Boolean isRevocation(byte[] responseBytes) {
+        try {
+            PKIMessage responseMessage = PKIMessage.getInstance(responseBytes);
+            PKIBody body = responseMessage.getBody();
+            int bodyType = body.getType();
+
+            if (bodyType == PKIBody.TYPE_REVOCATION_REP) {
                 return true;
             }
             return false;
@@ -93,6 +115,37 @@ public class CmpUtils {
             throw new AppException(ErrorCode.FAILED_TO_PARSE_RESPONSE);
         }
     }
+
+    public CmpRevocationResponse parseRrResponse(byte[] responseBytes) {
+        try {
+            PKIMessage pkiMessage = PKIMessage.getInstance(responseBytes);
+            PKIBody pkiBody = pkiMessage.getBody();
+
+            if (pkiBody.getType() != PKIBody.TYPE_REVOCATION_REP) {
+                return CmpRevocationResponse.builder()
+                        .code(ErrorCode.FAILED_TO_PARSE_RESPONSE.getCode())
+                        .message("Unexpected CMP body type for revocation response: " + pkiBody.getType())
+                        .build();
+            }
+
+            RevRepContent revRepContent = (RevRepContent) pkiBody.getContent();
+            // Sửa lỗi: revRepContent.getStatus() trả về mảng PKIStatusInfo[]
+            PKIStatusInfo pkiStatusInfo = revRepContent.getStatus()[0]; // <-- SỬA ĐỔI Ở ĐÂY
+
+            int status = pkiStatusInfo.getStatus().intValue();
+            String statusString = pkiStatusInfo.getStatusString() != null ?
+                    pkiStatusInfo.getStatusString().getStringAt(0).getString() : "No status message provided by EJBCA.";
+
+                return CmpRevocationResponse.builder()
+                        .code(status)
+                        .message(statusString)
+                        .build();
+
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.FAILED_TO_PARSE_RESPONSE);
+        }
+    }
+
 
 
 }

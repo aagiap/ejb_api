@@ -24,6 +24,6 @@ public class CMPController {
     @PostMapping("/rr/{alias}")
     public ApiResponse<?> sendRrRequest(@RequestBody CmpRevocationRequest request, @PathVariable String alias) {
         request.setSerialNumber(new BigInteger(request.getSerialNumberHex(), 16));
-        return cmpService.sendRevocationnRequest(alias, request);
+        return cmpService.sendRevocationRequest(alias, request);
     }
 }
