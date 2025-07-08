@@ -29,11 +29,11 @@ public enum ErrorCode {
     FAILED_TO_ENCODE_BYTES_CODE(22, "Failed to encode byte code", HttpStatus.SC_INTERNAL_SERVER_ERROR),
     CMP_ERROR(23, "CMP error response", HttpStatus.SC_BAD_REQUEST),
     EJBCA_REST_API_ERROR_RESPONSE(24, "EJBCA REST API error response", HttpStatus.SC_BAD_REQUEST),
-
+    BUILD_REVOCATION_MESSAGE_FAILED(25, "Build revocation message fail", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.SC_INTERNAL_SERVER_ERROR),
 
-    BUILD_REVOCATION_MESSAGE_FAILED(24, "Build revocation message faile", HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    BUILD_CLIENT_IR_MESSAGE_FAILED(26, "Build client certificate message fail", HttpStatus.SC_INTERNAL_SERVER_ERROR);
     ErrorCode(int code, String message, int httpStatusCode) {
         this.code = code;
         this.message = message;

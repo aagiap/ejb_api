@@ -31,6 +31,8 @@ public class CmpUtils {
     }
 
 
+
+
     public Boolean isExceptionCmpOccurred(byte[] responseBytes) {
         try {
             PKIMessage responseMessage = PKIMessage.getInstance(responseBytes);
@@ -49,8 +51,6 @@ public class CmpUtils {
     public ApiErrorResponse cmpApiErrorResponse(byte[] responseBytes) {
         PKIMessage responseMessage = PKIMessage.getInstance(responseBytes);
         PKIBody body = responseMessage.getBody();
-
-        int bodyType = body.getType();
 
             ErrorMsgContent error = ErrorMsgContent.getInstance(body.getContent());
             PKIStatusInfo statusInfo = error.getPKIStatusInfo();

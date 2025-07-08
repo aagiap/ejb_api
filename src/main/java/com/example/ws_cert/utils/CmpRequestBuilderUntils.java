@@ -15,10 +15,9 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.cmp.ProtectedPKIMessage;
 import org.bouncycastle.cert.cmp.ProtectedPKIMessageBuilder;
-import org.bouncycastle.cert.crmf.CertificateRequestMessage;
-import org.bouncycastle.cert.crmf.CertificateRequestMessageBuilder;
-import org.bouncycastle.cert.crmf.PKMACBuilder;
+import org.bouncycastle.cert.crmf.*;
 import org.bouncycastle.cert.crmf.jcajce.JcePKMACValuesCalculator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.MacCalculator;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.security.Security;
 import java.util.Date;
 
 @Component
@@ -39,6 +39,14 @@ public class CmpRequestBuilderUntils {
     private static final String SIGNING_ALGORITHM = "SHA256withRSA";
     private static final AlgorithmIdentifier DIGEST_ALGORITHM = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.3.14.3.2.26")); // SHA1
     private static final AlgorithmIdentifier MAC_ALGORITHM = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.2.840.113549.2.7")); // HMAC/SHA1
+
+    // Static block to register Bouncy Castle Provider once
+    static {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
+
 
     /**
      * Builds a complete CMP Initialization Request (IR) message.
@@ -192,7 +200,7 @@ public class CmpRequestBuilderUntils {
      */
     private ProtectedPKIMessageBuilder buildProtectedPKIMessageHeader(CmpIrRequest cmpIrRequest, PKIBody pkiBody) {
         X500Name subjectDN = new X500Name(cmpIrRequest.getSubjectDn());
-        X500Name issuerDN = new X500Name(cmpIrRequest.getIssueDn());
+        X500Name issuerDN = new X500Name(cmpIrRequest.getIssuerDn());
 
         GeneralName sender = new GeneralName(subjectDN);
         GeneralName recipient = new GeneralName(issuerDN);

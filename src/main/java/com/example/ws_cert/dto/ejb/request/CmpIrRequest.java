@@ -12,7 +12,7 @@ import java.util.Date;
 public class CmpIrRequest {
     private String password;
     private String subjectDn;
-    private String issueDn;
+    private String issuerDn;
     private Date notBefore;
     private Date notAfter;
 }
