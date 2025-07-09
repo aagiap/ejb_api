@@ -50,7 +50,7 @@ public class CMPService {
                 .build();
     }
 
-    public ApiResponse<?> sendRevocationRequest(String alias, CmpRevocationRequest request) {
+    public ApiResponse<?> sendRevocationnRequest(String alias, CmpRevocationRequest request) {
         String url = cmpUrl + "/" + alias;
         byte[] requestBytes = cmpUtils.buildRrMessage(request);
         byte[] responseBytes = httpUtils.sendCmpRequest(url, "POST", requestBytes);
